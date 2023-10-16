@@ -5,8 +5,6 @@
 </p>
 WarpCursor is an open-source desktop application that allows you to move your cursor instantly to any position on your screen. Built with Electron and Go, WarpCursor provides a seamless and fast cursor teleportation experience.
 
-![Demo or Screenshot](path-to-demo-gif-or-screenshot)
-
 ## 🚀 Features
 
 - **Instant Cursor Movement**: Move your cursor instantly to the specified coordinates.
