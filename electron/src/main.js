@@ -24,6 +24,51 @@ app.whenReady().then(() => {
   if (app.dock) {
     app.dock.hide();
   }  
+  
+  // smaple
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "file",
+      submenu: [
+        {
+          label: "new",
+          click: () => {
+            console.log("hello new");
+          },
+        },
+        {
+          label: "setting",
+          click: () => {
+            console.log("hello setting");
+            createSettingsWindow();
+          },
+        },
+        { type: "separator" },
+        {
+          label: "quit",
+          click: () => {
+            app.quit();
+          },
+        },
+      ],
+    },
+    {
+      label: "編集",
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+      ],
+    },
+  ]);
+  const iconPath = path.join(`${__dirname}/img`, "icon.png");
+  const tray = new Tray(iconPath);
+  tray.setToolTip("This is my application.");
+  tray.setContextMenu(contextMenu);
+
 
   globalShortcut.register("CommandOrControl+Shift+J", () => {
     if(!jPressTime) {
