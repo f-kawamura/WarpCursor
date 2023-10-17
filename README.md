@@ -37,7 +37,7 @@ cd WarpCursor
 
 # go cmd
 cd go
-go build -o ../../build/mouseMover
+go build -o ../build/cmd/mouseMover
 
 # WarpCursor build
 cd electron
@@ -48,7 +48,7 @@ npm run dev
 # Your build command here
 ```
 cd go
-go build -o ../../build/mouseMover
+go build -o ../build/cmd/mouseMover
 
 cd electron
 npm run build
