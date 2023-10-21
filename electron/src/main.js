@@ -84,10 +84,10 @@ app.whenReady().then(() => {
     const currentTime = Date.now();
 
     if (currentTime - jPressTime < 500) {
-      const displayIndex = (currentDisplayIndex + 1) % 3;
-      currentDisplayIndex = displayIndex
-
       const displays = screen.getAllDisplays();
+
+      const displayIndex = (currentDisplayIndex + 1) % displays.length;
+      currentDisplayIndex = displayIndex
 
       const {
         x: displayX,
