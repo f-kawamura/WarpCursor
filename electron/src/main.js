@@ -1,6 +1,5 @@
 const {
   screen,
-  dialog,
   Tray,
   Menu,
   app,
@@ -8,11 +7,10 @@ const {
   globalShortcut,
 } = require("electron");
 const path = require("path");
-const isDev = require('electron-is-dev');
-const { execFile } = require('child_process');
+const isDev = require("electron-is-dev");
+const { execFile } = require("child_process");
 
-let jPressTime = null;
-let currentDisplayIndex = 0 
+let currentDisplayIndex = 0;
 
 app.on("window-all-closed", (e) => {
   if (process.platform !== "darwin") {
@@ -23,9 +21,8 @@ app.on("window-all-closed", (e) => {
 app.whenReady().then(() => {
   if (app.dock) {
     app.dock.hide();
-  }  
-  
-  // smaple
+  }
+
   const contextMenu = Menu.buildFromTemplate([
     {
       label: "file",
@@ -69,45 +66,28 @@ app.whenReady().then(() => {
   tray.setToolTip("This is my application.");
   tray.setContextMenu(contextMenu);
 
-
   globalShortcut.register("CommandOrControl+Shift+J", () => {
-    if(!jPressTime) {
-      jPressTime = Date.now();
+    const displays = screen.getAllDisplays();
 
-      setTimeout(() => {
-        jPressTime = null
-      }, 500);
+    const displayIndex = (currentDisplayIndex + 1) % displays.length;
+    currentDisplayIndex = displayIndex;
 
-      return
-    }
+    const {
+      x: displayX,
+      y: displayY,
+      width: displayWidth,
+      height: displayHeight,
+    } = displays[displayIndex].bounds;
 
-    const currentTime = Date.now();
+    const { x, y } = getWindowPositions(
+      displayX,
+      displayY,
+      displayWidth,
+      displayHeight
+    );
 
-    if (currentTime - jPressTime < 500) {
-      const displays = screen.getAllDisplays();
-
-      const displayIndex = (currentDisplayIndex + 1) % displays.length;
-      currentDisplayIndex = displayIndex
-
-      const {
-        x: displayX,
-        y: displayY,
-        width: displayWidth,
-        height: displayHeight,
-      } = displays[displayIndex].bounds;
-
-      const { x, y } = getWindowPositions(
-        displayX,
-        displayY,
-        displayWidth,
-        displayHeight
-      );
-
-      moveMouse(x, y)
-      flashCurrentCursor(x, y)
-    } 
-
-    jPressTime = null
+    moveMouse(x, y);
+    flashCurrentCursor(x, y);
   });
 });
 
@@ -123,19 +103,19 @@ const getWindowPositions = (
   };
 };
 
-
-const pathToGoBinary = isDev ? path.join(`${__dirname}/../../build/cmd`, 'mouseMover') : path.join(process.resourcesPath, 'mouseMover');
+const pathToGoBinary = isDev
+  ? path.join(`${__dirname}/../../build/cmd`, "mouseMover")
+  : path.join(process.resourcesPath, "mouseMover");
 
 const moveMouse = (x, y) => {
   execFile(pathToGoBinary, [x, y], (error, stdout, stderr) => {});
-}
-
+};
 
 const flashCurrentCursor = (x, y) => {
-  closeAllWindows()
+  closeAllWindows();
   const warpWindow = new BrowserWindow({
-    x: x-150,
-    y: y-150,
+    x: x - 150,
+    y: y - 150,
     width: 300,
     height: 300,
     frame: false,
@@ -147,7 +127,9 @@ const flashCurrentCursor = (x, y) => {
     },
   });
 
-  warpWindow.loadURL('data:text/html,' + encodeURIComponent(`
+  warpWindow.loadURL(
+    "data:text/html," +
+      encodeURIComponent(`
     <html>
     <head>
         <style>
@@ -173,13 +155,13 @@ const flashCurrentCursor = (x, y) => {
         <div class="circle"></div>
     </body>
     </html>
-    `));
+    `)
+  );
 
   setTimeout(() => {
-    closeAllWindows()
+    closeAllWindows();
   }, 600);
-
-}
+};
 
 const closeAllWindows = () => {
   BrowserWindow.getAllWindows().forEach((window) => window.close());
